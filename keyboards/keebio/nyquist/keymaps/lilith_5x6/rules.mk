@@ -1,0 +1,3 @@
+LTO_ENABLE = yes
+SPLIT_KEYBOARD=no
+LAYOUTS=ortho_5x6

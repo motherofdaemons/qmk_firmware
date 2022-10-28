@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include QMK_KEYBOARD_H
 
 #define launch_app(app) (SS_TAP(X_LGUI)SS_DELAY(300) app SS_DELAY(300)SS_TAP(X_ENT))
+#define launch_term (SEND_STRING(SS_LGUI("t")));
 
 enum custom_keycodes {
     TP = SAFE_RANGE,
@@ -25,6 +26,7 @@ enum custom_keycodes {
     VS_CODE,
     CHROME,
     FILE_EXPLORER,
+    SQLITE_BROWSER,
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
@@ -36,7 +38,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         break;
     case TERM:
         if (record->event.pressed) {
-            SEND_STRING(SS_LGUI("t"));
+            launch_term
         }
         break;
     case SSH_METER:
@@ -69,6 +71,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             SEND_STRING(SS_LGUI("e"));
         }
         break;
+    case SQLITE_BROWSER:
+        if (record->event.pressed) {
+            SEND_STRING(launch_app("sqlite browser"));
+        }
+        break;
     }
 
     return true;
@@ -78,7 +85,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [0] = LAYOUT_ortho_5x6(
         QK_BOOT,  SSH_METER,    KC_2,    KC_3,    KC_4,   TERM,
         KC_TAB,  KC_Q,    CHROME,    FILE_EXPLORER,    TP,    TERM,
-        KC_ESC,  KC_A,    SPOTIFY,    KC_D,    KC_F,    KC_G,
+        KC_ESC,  KC_A,    SPOTIFY,    SQLITE_BROWSER,    KC_F,    KC_G,
         KC_LSFT, KC_Z,    KC_X,    VS_CODE,    KC_V,    BUILD,
         KC_VOLD, KC_MUTE, KC_VOLU, KC_MPRV,   KC_MPLY, KC_MNXT
     ),

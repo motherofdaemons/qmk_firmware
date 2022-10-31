@@ -14,7 +14,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include QMK_KEYBOARD_H
 
-#define TP_LAYER 1
+#define _TP_LAYER 1
 
 #define launch_app(app) (SEND_STRING(SS_TAP(X_LGUI)SS_DELAY(300) app SS_DELAY(300)SS_TAP(X_ENT)))
 #define term_command(command) (SEND_STRING(SS_LGUI("t") SS_DELAY(300) command SS_TAP(X_ENT)))
@@ -45,13 +45,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
     case TP:
         if (record->event.pressed) {
-            if (IS_LAYER_OFF(TP_LAYER))
+            if (IS_LAYER_OFF(_TP_LAYER))
             {
                 SEND_STRING("TransactionProcess");
-                layer_on(TP_LAYER);
+                layer_on(_TP_LAYER);
             } else
             {
-                layer_off(TP_LAYER);
+                layer_off(_TP_LAYER);
                 SEND_STRING(SS_TAP(X_ENT));
             }
         }
@@ -158,6 +158,28 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     return true;
 };
 
+#ifdef RGBLIGHT_ENABLE
+void keyboard_post_init_user(void) {
+    rgblight_enable_noeeprom(); // Enables RGB, without saving settings
+    rgblight_sethsv_noeeprom(HSV_WHITE);
+    rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);
+}
+
+
+layer_state_t layer_state_set_user(layer_state_t state) {
+    switch (get_highest_layer(state)) {
+        case _TP_LAYER:
+            rgblight_sethsv_noeeprom(HSV_RED);
+            break;
+        default:
+            rgblight_sethsv_noeeprom(HSV_WHITE);
+            break;
+    }
+    return state;
+}
+#endif
+
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [0] = LAYOUT_ortho_5x6(
         QK_BOOT,  LXC_BIONIC,    LXC_TRUSTY,    SSH_METER,    KC_4,   TERM,
@@ -166,7 +188,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_LSFT, KC_Z,    KC_X,    VS_CODE,    KC_V,    BUILD,
         KC_VOLD, KC_MUTE, KC_VOLU, KC_MPRV,   KC_MPLY, KC_MNXT
     ),
-    [TP_LAYER] = LAYOUT_ortho_5x6(
+    [_TP_LAYER] = LAYOUT_ortho_5x6(
         _______, _______, _______, _______, _______, _______,
         _______, _______, WATCHDOG, DUMP_EVENT_CALLBACKS, RECONFIGURE, LOAD_PROFILE_MAINT,
         TP, LOGALL, SQL_TRACE, DUMP_LP, FILL_LP, _______,

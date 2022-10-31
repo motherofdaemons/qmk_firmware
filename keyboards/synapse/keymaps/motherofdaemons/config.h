@@ -16,12 +16,13 @@
 
 #pragma once
 
-/*Modtaps*/
+// Modtaps
 #define TAPPING_TERM 165
 #define IGNORE_MOD_TAP_INTERRUPT
 
-/*Combos*/
-#ifdef COMBO_ENABLE
-#    define COMBO_COUNT 5
-#    define COMBO_TERM 50
-#endif 
+// Combos
+#define COMBO_COUNT 5
+#define COMBO_TERM 50
+
+// Tap Dance
+#define TAPPING_TERM_PER_KEY
